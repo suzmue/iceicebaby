@@ -12,13 +12,14 @@ $ git clone https://github.com/suzmue/iceicebaby.git
 In the function `main` you can input the number of rows, columns, and which rows and columns will serve as inputs and outputs to the `findPartitionFunction` function.
 
 If you want to print out each lattice, set `var printEachLattice bool = true`.
-* **Step 4.** You can run this program by typing:
+* **Step 4.** You can run this program while in the folder:
 
 ```
-go run main.go
+$ cd iceicebaby
+$ go run main.go
 ```
 
 If you want to direct the output to a file, run
 ```
-go run main.go > file.txt
+$ go run main.go > file.txt
 ```
