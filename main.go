@@ -5,10 +5,21 @@ import (
 	"strings"
 )
 
-var printEachLattice bool = false
+var printEachLattice bool = true // To print lattice, change false to true
 
 func main() {
-	weights := findPartitionFunction(4, 4, []bool{true, true, false, true}, []bool{true, false, true, true})
+	// To change the lattice for which you are finding the partition function
+	// 1. Change the first argument to be the number of rows
+	// 2. Change the second argument to be the number of columns
+	// 3. Change the third argument to be an array where the ith element is true if
+	//    a path originates in xi and false otherwise
+	// 4. Change the fourth argument to be an array where the jth element is true if
+	//    a path exits at column j and false otherwise.
+	weights := findPartitionFunction(3, 3, []bool{false, false, true}, []bool{false, false, true})
+	if len(weights) == 0 {
+		fmt.Println("There were no lattices that satisfy the entered constraints.")
+		return
+	}
 	weights = simplify(weights)
 	fmt.Printf("partition function = %s", polynomialToString(weights[0]))
 	for i := 1; i < len(weights); i++ {
@@ -42,7 +53,25 @@ func validate(lattice [][]vertex, rows, columns int, inputs, outputs []bool) boo
 		}
 	}
 
-	if len(inputs) != len(outputs) {
+	if len(inputs) != rows || len(outputs) != columns {
+		return false
+	}
+
+	numIn := 0
+	for i := 0; i < len(inputs); i++ {
+		if inputs[i] {
+			numIn++
+		}
+	}
+
+	numOut := 0
+	for i := 0; i < len(outputs); i++ {
+		if outputs[i] {
+			numOut++
+		}
+	}
+
+	if numIn != numOut {
 		return false
 	}
 
@@ -213,18 +242,15 @@ func polynomialToString(poly []int) string {
 		return "0"
 	}
 
-	started := false
+	single := false
 	for i, x := range poly {
 		if x == 0 {
 			continue
 		}
 		if i == 0 {
+			single = (x == 1)
 			str += fmt.Sprintf("%d", x)
-			started = true
 			continue
-		}
-		if started {
-			str += fmt.Sprintf(" ")
 		}
 		if x == 1 {
 			str += fmt.Sprintf("x%d", i-1)
@@ -233,7 +259,9 @@ func polynomialToString(poly []int) string {
 		}
 	}
 
-	str = strings.TrimPrefix(str, "1 ")
+	if single && len(str) > 1 {
+		str = strings.TrimPrefix(str, "1")
+	}
 	return str
 }
 
