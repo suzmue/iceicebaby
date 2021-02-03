@@ -243,10 +243,15 @@ func polynomialToString(poly []int) string {
 	}
 
 	single := false
+	started := false
 	for i, x := range poly {
 		if x == 0 {
 			continue
 		}
+		if started {
+			str += fmt.Sprintf(" ")	
+		}
+		started = true
 		if i == 0 {
 			single = (x == 1)
 			str += fmt.Sprintf("%d", x)
@@ -260,7 +265,7 @@ func polynomialToString(poly []int) string {
 	}
 
 	if single && len(str) > 1 {
-		str = strings.TrimPrefix(str, "1")
+		str = strings.TrimPrefix(str, "1 ")
 	}
 	return str
 }
